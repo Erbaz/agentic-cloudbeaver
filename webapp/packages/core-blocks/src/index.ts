@@ -265,3 +265,4 @@ export * from './useObjectInfoTooltip.js';
 export * from './Alert.js';
 export * from './ObjectPropertyInfo/evaluate.js';
 export * from './ObjectPropertyInfo/getObjectPropertyDefaults.js';
+export * from './ChatPanel/ChatPanel.js';

@@ -268,9 +268,34 @@ export const ReactCodemirror = observer<IReactCodeMirrorProps, IEditorRef>(
       [view, incomingView],
     );
 
+    useLayoutEffect(() => {
+      // Inject global styles
+      const style = document.createElement('style');
+      style.textContent = `
+        .editor{
+         width: 100% !important;
+         height: 100% !important;
+        }
+        .ReactCodemirror .cm-editor {
+          width: 100% !important;
+          height: 100% !important;
+        }
+        
+        .ReactCodemirror .cm-editor .cm-scroller {
+          overflow: auto !important;
+        }
+      `;
+      document.head.appendChild(style);
+
+      return () => {
+        document.head.removeChild(style);
+      };
+    }, []);
+
     return (
       <ReactCodemirrorContext.Provider value={context}>
-        <div ref={setContainer} className="ReactCodemirror">
+        <div style={{ height: '100%', width: '100%' }} ref={setContainer} className="ReactCodemirror">
+          {' '}
           <ReactCodemirrorSearchPanel />
           {children}
         </div>

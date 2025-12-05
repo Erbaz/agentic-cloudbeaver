@@ -53,6 +53,7 @@ export const SlideBox = observer<Props>(function SlideBox({ children, open, clas
   return (
     <div
       ref={mergedRefs}
+      style={{ flex: 3 }}
       className={s(slideBoxStyles, { slideBox: true }, s(slideBoxElementStyles, { open }), s(slideBoxOverlayStyles, { open }), className)}
     >
       {children}

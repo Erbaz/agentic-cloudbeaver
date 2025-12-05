@@ -20,7 +20,6 @@
   letter-spacing: inherit;
   text-decoration: inherit;
   text-transform: inherit;
-
   &:focus {
     border-color: var(--rdg-selection-color);
     outline: none;

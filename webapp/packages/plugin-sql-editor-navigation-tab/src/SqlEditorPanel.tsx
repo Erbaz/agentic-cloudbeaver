@@ -10,7 +10,7 @@ import { observer } from 'mobx-react-lite';
 import { DATA_CONTEXT_TAB_ID, useTab } from '@cloudbeaver/core-ui';
 import { useCaptureViewContext } from '@cloudbeaver/core-view';
 import type { TabHandlerPanelComponent } from '@cloudbeaver/plugin-navigation-tabs';
-import { DATA_CONTEXT_SQL_EDITOR_STATE, type ISqlEditorTabState, SqlEditor } from '@cloudbeaver/plugin-sql-editor';
+import { DATA_CONTEXT_SQL_EDITOR_STATE, type ISqlEditorTabState, SqlEditor, ChatPanel } from '@cloudbeaver/plugin-sql-editor';
 
 export const SqlEditorPanel: TabHandlerPanelComponent<ISqlEditorTabState> = observer(function SqlEditorPanel({ tab }) {
   const baseTab = useTab(tab.id);
@@ -32,5 +32,8 @@ export const SqlEditorPanel: TabHandlerPanelComponent<ISqlEditorTabState> = obse
     return null;
   }
 
-  return <SqlEditor state={handlerState} />;
+  return (<div style={{display: "flex", flexDirection: "row", width: "100%", height: "100%"}}>
+    <SqlEditor state={handlerState} />
+    <ChatPanel state={handlerState}/>
+    </div>);
 });

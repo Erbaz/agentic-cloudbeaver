@@ -19,7 +19,6 @@ import {
   Split,
   useS,
   useSplitUserState,
-  ChatPanel,
 } from '@cloudbeaver/core-blocks';
 import { useService } from '@cloudbeaver/core-di';
 import { OptionsPanelService } from '@cloudbeaver/core-ui';
@@ -70,9 +69,6 @@ export const RightArea = observer<Props>(function RightArea({ className }) {
           </Loader>
         </SlideElement>
       </SlideBox>
-      <div style={{ border: '1px solid blue', flex: 1 }}>
-        <ChatPanel />
-      </div>
     </div>
   );
 });

@@ -60,6 +60,10 @@ export function useAgentService(sqlEditorTabState: ISqlEditorTabState) {
     const connectionsManagerService = useService(ConnectionsManagerService);
     const [sessionExpired, setSessionExpired] = useState(expirationService.expired);
     const [inputValue, setInputValue] = useState('');
+    const [isConnected, setIsConnected] = useState(false);
+    const [showConnectionForm, setShowConnectionForm] = useState(false);
+
+    const [agentChatId, setAgentChatId] = useState<string | null>(null);
     const [messages, setMessages] = useState<IMessage[]>([  
       { id: '1', role: 'assistant', content: 'Hello! How can I help you with your SQL query today?' }
     ]);
@@ -101,6 +105,7 @@ export function useAgentService(sqlEditorTabState: ISqlEditorTabState) {
         console.log('connection Id', connection?.id);
 
         if (connection) {
+          setIsConnected(true);
           const connectionKey = createConnectionParam(connection);
 
           // 1. Load General Config (Host, Port, DB, URL)
@@ -141,6 +146,8 @@ export function useAgentService(sqlEditorTabState: ISqlEditorTabState) {
                 }
               }
           });
+        } else {
+          setIsConnected(false);
         }
 
         console.log(`tabId ${handleGetTabId()}`);
@@ -177,6 +184,23 @@ export function useAgentService(sqlEditorTabState: ISqlEditorTabState) {
       const connect = useCallback( async () => {
         // use connectionConfig to create connection
 
+        let payload = {...connectionConfig}
+        if(connectionConfig.db_host == "localhost"){
+          payload = {...payload, db_host: "host.docker.internal"}
+        }
+
+        const response = await fetch("http://localhost:8000/chat", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        });
+        
+        console.log('connect:', response);
+        const res: {chat_id: string} = await response.json();
+        setAgentChatId(res.chat_id);
+
       }, [sqlEditor, connectionConfig])
 
       const sendMessage = useCallback(
@@ -186,11 +210,26 @@ export function useAgentService(sqlEditorTabState: ISqlEditorTabState) {
               role: 'user',
               content: inputValue,
             };
-        
+
+            console.log("User message: ", inputValue)
+
+            const response = await fetch(`http://localhost:8000/chat/${agentChatId}`,{
+              method: "POST",
+               headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                question: inputValue
+              }) 
+            })
+
+            console.log("Agent response: ", response)
+  
+            const res: {answer: string} = await response.json();
             const assistantResponse: IMessage = {
               id: Date.now().toString()+"assistant",
               role: 'assistant',
-              content: "I cannot  help with your query right now. Please try again later."
+              content: res.answer
             }
         
             setMessages((prev) => [...prev, message, assistantResponse]);
@@ -200,7 +239,10 @@ export function useAgentService(sqlEditorTabState: ISqlEditorTabState) {
 
       useEffect(()=>{
         console.log('connectionConfig', connectionConfig);
-      },[connectionConfig])
+        if(isConnectionConfigComplete(connectionConfig) && !showConnectionForm){
+          connect()
+        }
+      },[connectionConfig, showConnectionForm])
 
 
       return {
@@ -213,6 +255,9 @@ export function useAgentService(sqlEditorTabState: ISqlEditorTabState) {
         handleGetScript,
         setConnectionConfig,
         connectionConfig,
+        isConnected,
+        showConnectionForm,
+        setShowConnectionForm
       }
 
 }

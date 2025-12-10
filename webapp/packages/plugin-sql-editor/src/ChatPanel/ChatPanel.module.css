@@ -8,6 +8,12 @@
   font-family: var(--theme-font-family);
 }
 
+.chatPanelSessionExpired{
+  position: absolute;
+  align-self: center;
+  bottom: 50%;
+}
+
 .chatPanelContainerOpen{
   width: 30%;
     border-left: 1px solid grey;

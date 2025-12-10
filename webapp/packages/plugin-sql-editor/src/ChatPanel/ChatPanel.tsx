@@ -19,7 +19,11 @@ export const ChatPanel = observer<ChatPanelProps>(function ChatPanel({ state }) 
     inputValue,
     setInputValue,
     connectionConfig,
-    setConnectionConfig
+    setConnectionConfig,
+    isConnected,
+    showConnectionForm,
+    setShowConnectionForm,
+    // connect
   } = useAgentService(state);
 
   const [chatIsClosed, setChatIsClosed] = useState(false);
@@ -28,6 +32,9 @@ export const ChatPanel = observer<ChatPanelProps>(function ChatPanel({ state }) 
 
   return (
     <div className={`${styles['chatPanelContainer']} ${chatIsClosed ? styles['chatPanelContainerClose'] : styles['chatPanelContainerOpen']}`}>
+      <div>
+        <button onClick={()=>{setShowConnectionForm(true)}}>Reconnect</button>
+      </div>
       <div
         className={`${styles['chatPanelHeader']} ${
           chatIsClosed ? styles['chatPanelHeaderClose'] : styles['chatPanelHeaderOpen']
@@ -35,12 +42,14 @@ export const ChatPanel = observer<ChatPanelProps>(function ChatPanel({ state }) 
       >
         <button className={styles['chatPanelCloseBtn']} onClick={()=>{setChatIsClosed(!chatIsClosed)}}>{chatIsClosed?"<":">"}</button>
       </div>
-      {sessionExpired ? (
+      {!isConnected || sessionExpired ? (
         <div className={styles['chatPanelSessionExpired']}>
-          Session expired
+          Not Connected
         </div>
-      ) : !isConnectionConfigComplete(connectionConfig) ? (
-        <ConnectionForm config={connectionConfig} onSave={setConnectionConfig} />
+      ) : !isConnectionConfigComplete(connectionConfig) || showConnectionForm? (
+        <ConnectionForm config={connectionConfig} onSave={(config)=>{
+          setConnectionConfig(config);
+          setShowConnectionForm(false)}} />
       ) : (
         <div className={styles['chatPanelContent']}>
           <div className={styles['chatPanelMessages']}>

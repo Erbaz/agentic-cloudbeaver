@@ -83,6 +83,7 @@ export const ConnectionForm: React.FC<ConnectionFormProps> = ({ config, onSave }
         <label>Memgraph Password:</label>
         <input
           type="password"
+          autoComplete="off"
           name="memgraph_password"
           value={formData.memgraph_password || ''}
           onChange={handleChange}
@@ -156,8 +157,8 @@ export const ConnectionForm: React.FC<ConnectionFormProps> = ({ config, onSave }
           name="db_password"
           value={formData.db_password || ''}
           onChange={handleChange}
-           className={styles['formInput']}
-           required
+          className={styles['formInput']}
+          required
         />
       </div>
       <button type="submit" className={styles['formButton']}>Save Configuration</button>

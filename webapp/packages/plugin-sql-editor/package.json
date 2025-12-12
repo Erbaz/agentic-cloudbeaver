@@ -46,6 +46,7 @@
     "@cloudbeaver/plugin-data-viewer": "workspace:*",
     "@cloudbeaver/plugin-navigation-tabs": "workspace:*",
     "@dbeaver/js-helpers": "workspace:^",
+    "@microsoft/fetch-event-source": "^2.0.1",
     "mobx": "^6",
     "mobx-react-lite": "^4",
     "react": "^19",

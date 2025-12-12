@@ -23,6 +23,7 @@ export const ChatPanel = observer<ChatPanelProps>(function ChatPanel({ state }) 
     isConnected,
     showConnectionForm,
     setShowConnectionForm,
+    abortController,
     // connect
   } = useAgentService(state);
 
@@ -32,7 +33,7 @@ export const ChatPanel = observer<ChatPanelProps>(function ChatPanel({ state }) 
 
   return (
     <div className={`${styles['chatPanelContainer']} ${chatIsClosed ? styles['chatPanelContainerClose'] : styles['chatPanelContainerOpen']}`}>
-      <div>
+      <div className={styles['chatPanelReconnect']}>
         <button onClick={()=>{setShowConnectionForm(true)}}>Reconnect</button>
       </div>
       <div
@@ -73,6 +74,9 @@ export const ChatPanel = observer<ChatPanelProps>(function ChatPanel({ state }) 
             <button className={styles['chatPanelSendButton']} onClick={sendMessage}>
               Send
             </button>
+            <button className={styles['chatPanelSendButton']} onClick={()=>{abortController.current?.abort()}}>
+              Cancel
+            </button> 
           </div>
         </div>
       )}

@@ -4167,7 +4167,6 @@ __metadata:
     "@cloudbeaver/core-executor": "workspace:*"
     "@cloudbeaver/core-localization": "workspace:*"
     "@cloudbeaver/core-navigation-tree": "workspace:*"
-    "@cloudbeaver/core-projects": "workspace:*"
     "@cloudbeaver/core-resource": "workspace:*"
     "@cloudbeaver/core-root": "workspace:*"
     "@cloudbeaver/core-sdk": "workspace:*"
@@ -4183,6 +4182,7 @@ __metadata:
     "@dbeaver/cli": "workspace:*"
     "@dbeaver/js-helpers": "workspace:^"
     "@dbeaver/react-tests": "workspace:*"
+    "@microsoft/fetch-event-source": "npm:^2.0.1"
     "@types/react": "npm:^19"
     mobx: "npm:^6"
     mobx-react-lite: "npm:^4"
@@ -4542,6 +4542,7 @@ __metadata:
     "@cloudbeaver/product-base": "workspace:*"
     "@cloudbeaver/product-default-impl": "workspace:*"
     "@cloudbeaver/tsconfig": "workspace:*"
+    "@microsoft/fetch-event-source": "npm:^2.0.1"
     "@types/react": "npm:^19"
     "@types/react-dom": "npm:^19"
     concurrently: "npm:^9"
@@ -6666,6 +6667,13 @@ __metadata:
     "@types/react": ">=16"
     react: ">=16"
   checksum: 10c0/34ca98bc2a0f969894ea144dc5c8a5294690505458cd24965cd9be854d779c193ad9192bf9143c4c18438fafd1902e100d99067e045c69319288562d497558c6
+  languageName: node
+  linkType: hard
+
+"@microsoft/fetch-event-source@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "@microsoft/fetch-event-source@npm:2.0.1"
+  checksum: 10c0/38c69e9b9990e6cee715c7bbfa2752f943b42575acadb36facf19bb831f1520c469f854277439154258e0e1dc8650cc85038230d1f451e3f6b62e8faeaa1126c
   languageName: node
   linkType: hard
 

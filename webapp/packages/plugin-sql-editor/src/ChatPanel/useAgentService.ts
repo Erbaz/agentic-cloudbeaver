@@ -187,11 +187,11 @@ export function useAgentService(sqlEditorTabState: ISqlEditorTabState) {
 
 
 
-  const connect = useCallback(async () => {
+  const connect = useCallback(async (config: IConnectionConfig) => {
     // use connectionConfig to create connection
 
-    let payload = { ...connectionConfig }
-    if (connectionConfig.db_host == "localhost") {
+    let payload = { ...config }
+    if (config.db_host == "localhost") {
       payload = { ...payload, db_host: "host.docker.internal" }
     }
 
@@ -207,7 +207,7 @@ export function useAgentService(sqlEditorTabState: ISqlEditorTabState) {
     const res: { chat_id: string } = await response.json();
     setAgentChatId(res.chat_id);
 
-  }, [sqlEditor, connectionConfig])
+  }, [])
 
   const sendMessage = useCallback(
     async () => {
@@ -248,19 +248,19 @@ export function useAgentService(sqlEditorTabState: ISqlEditorTabState) {
           question: inputValue
         }),
         onmessage(ev: any) {
-          console.log(ev.data);
+          console.log("Assistant message: ", ev.data);
           setMessages((prev: IMessage[]) => {
             if (prev.length === 0) return prev;
 
             const lastIndex = prev.length - 1;
-            const lastMessage = prev[lastIndex];
+            const lastMessage = prev[lastIndex] as IMessage;
 
             return [
               ...prev.slice(0, lastIndex), // All except last
               {                    // Replace last
                 ...lastMessage,
-                content: `${lastMessage?.content} ${ev.data}` // Proper concatenation
-              } as IMessage
+                content: lastMessage?.content === "...Thinking..." ? `${ev.data}` : `${lastMessage.content} ${ev.data}` // Proper concatenation
+              }
             ];
           });
         }
@@ -268,14 +268,6 @@ export function useAgentService(sqlEditorTabState: ISqlEditorTabState) {
 
     },
     [inputValue])
-
-  useEffect(() => {
-    console.log('connectionConfig', connectionConfig);
-    if (isConnectionConfigComplete(connectionConfig) && !showConnectionForm) {
-      connect()
-    }
-  }, [connectionConfig, showConnectionForm])
-
 
   return {
     messages,

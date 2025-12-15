@@ -191,3 +191,61 @@
 .formButton:hover {
   opacity: 0.9;
 }
+
+/* Message Block Styles */
+.messageBlocksContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.messageBlockDefault {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--theme-on-background);
+}
+
+.messageBlockThought {
+  font-size: 12px;
+  line-height: 1.4;
+  color: rgba(180, 180, 180, 0.8);
+  font-style: italic;
+  padding: 6px 8px;
+  background-color: rgba(128, 128, 128, 0.1);
+  border-radius: 4px;
+  border-left: 2px solid rgba(180, 180, 180, 0.4);
+}
+
+.messageBlockAction {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--theme-on-background);
+  padding: 6px 8px;
+  background-color: rgba(100, 150, 200, 0.15);
+  border-radius: 4px;
+  border-left: 2px solid rgba(100, 150, 200, 0.6);
+  font-weight: 500;
+}
+
+.messageBlockActionInput {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--theme-on-background);
+  padding: 6px 8px;
+  background-color: rgba(150, 100, 200, 0.15);
+  border-radius: 4px;
+  border-left: 2px solid rgba(150, 100, 200, 0.6);
+  font-family: 'Courier New', monospace;
+  white-space: pre-wrap;
+}
+
+.messageBlockAnswer {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--theme-on-background);
+  font-weight: bold;
+  padding: 8px 10px;
+  background-color: rgba(50, 200, 100, 0.15);
+  border-radius: 4px;
+  border-left: 3px solid rgba(50, 200, 100, 0.7);
+}

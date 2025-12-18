@@ -105,22 +105,14 @@ export function useAgentService(sqlEditorTabState: ISqlEditorTabState) {
             ...prev,
             db_host: customOptions.host,
             db_port: customOptions.port,
-            db_name: customOptions.databaseName,
             db_url: customOptions.url,
+            ...(customOptions.databaseName && { db_name: customOptions.databaseName })
           }));
           chatPanelStore.setConnectionConfig({
             db_host: customOptions.host,
             db_port: customOptions.port,
-            db_name: customOptions.databaseName,
             db_url: customOptions.url,
-          });
-          console.log('Connection Config:', {
-            host: customOptions.host,
-            port: customOptions.port,
-            database: customOptions.databaseName,
-            url: customOptions.url,
-            properties: customOptions.mainPropertyValues,
-            ...customOptions,
+            ...(customOptions.databaseName && { db_name: customOptions.databaseName })
           });
         }
       });
@@ -183,6 +175,8 @@ export function useAgentService(sqlEditorTabState: ISqlEditorTabState) {
     if (config.db_host == "localhost") {
       payload = { ...payload, db_host: "host.docker.internal" }
     }
+
+    chatPanelStore.setConnectionConfig(config)
 
     const response = await fetch("http://localhost:8000/chat", {
       method: "POST",
@@ -270,6 +264,7 @@ export function useAgentService(sqlEditorTabState: ISqlEditorTabState) {
       (data) => {
         console.log("--- Chat Panel Store Updated (reaction) ---");
         console.log(data);
+        console.log({ connectionConfig: data.connectionConfig })
       }
     );
 

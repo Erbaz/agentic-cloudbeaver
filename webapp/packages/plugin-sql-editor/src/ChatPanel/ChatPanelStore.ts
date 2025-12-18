@@ -5,7 +5,7 @@ import type { IMessage } from './IMessage.js';
 export class ChatPanelStore {
   isConnected: boolean = false;
   agentChatId: string = "";
-  connectionConfig: IConnectionConfig | null = null;
+  connectionConfig: IConnectionConfig = {};
   editorId: string = "";
   chatMessages: IMessage[] = [];
   localStorageKey: string;
@@ -35,7 +35,7 @@ export class ChatPanelStore {
         // Only assign observable properties, not methods
         this.isConnected = data.isConnected ?? false;
         this.agentChatId = data.agentChatId ?? "";
-        this.connectionConfig = (data.connectionConfig ?? null) as IConnectionConfig | null;
+        this.connectionConfig = (data.connectionConfig ?? {}) as IConnectionConfig;
         this.chatMessages = (data.chatMessages ?? []) as IMessage[];
         // Don't assign editorId from storage - use constructor parameter
       }

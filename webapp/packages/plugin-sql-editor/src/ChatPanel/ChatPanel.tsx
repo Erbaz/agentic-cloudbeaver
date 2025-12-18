@@ -4,6 +4,8 @@ import { useState, useRef, useCallback } from 'react';
 import { useAgentService, isConnectionConfigComplete } from './useAgentService.js';
 import { useS } from '@cloudbeaver/core-blocks';
 import type { ISqlEditorTabState } from '../ISqlEditorTabState.js';
+import { useChatPanelStore } from './ChatPanelContext.js';
+
 import style from './ChatPanel.module.css';
 
 interface ChatPanelProps {
@@ -24,17 +26,15 @@ export const ChatPanel = observer<ChatPanelProps>(function ChatPanel({ state }) 
     inputValue,
     setInputValue,
     connectionConfig,
-    setConnectionConfig,
     isConnected,
     showConnectionForm,
     setShowConnectionForm,
     abortController,
     connect
   } = useAgentService(state);
-
   const [chatIsClosed, setChatIsClosed] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-
+  const chatPanelStore = useChatPanelStore();
   const renderAssistantMessage = useCallback((content: string) => {
     // Regex patterns to match block boundaries (with flexible whitespace)
     const thoughtRegex = /Thought\s*:/gi;
@@ -141,9 +141,8 @@ export const ChatPanel = observer<ChatPanelProps>(function ChatPanel({ state }) 
           <div className={styles['chatPanelSessionExpired']}>
             Not Connected
           </div>
-        ) : !isConnectionConfigComplete(connectionConfig) || showConnectionForm? (
-          <ConnectionForm config={connectionConfig} onSave={(config)=>{
-            setConnectionConfig(config);
+        ) : (chatPanelStore.connectionConfig && !isConnectionConfigComplete(chatPanelStore.connectionConfig))|| showConnectionForm? (
+          <ConnectionForm config={chatPanelStore.connectionConfig} onSave={(config)=>{
             connect(config);
             setShowConnectionForm(false)
           }} />

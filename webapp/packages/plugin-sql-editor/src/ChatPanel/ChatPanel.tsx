@@ -33,7 +33,6 @@ export const ChatPanel = observer<ChatPanelProps>(function ChatPanel({ state }) 
   } = useAgentService(state);
 
   const [chatIsClosed, setChatIsClosed] = useState(false);
-
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const renderAssistantMessage = useCallback((content: string) => {
@@ -127,56 +126,56 @@ export const ChatPanel = observer<ChatPanelProps>(function ChatPanel({ state }) 
   }, [styles]);
 
   return (
-    <div className={`${styles['chatPanelContainer']} ${chatIsClosed ? styles['chatPanelContainerClose'] : styles['chatPanelContainerOpen']}`}>
-      <div className={styles['chatPanelReconnect']}>
-        <button onClick={()=>{setShowConnectionForm(true)}}>Reconnect</button>
-      </div>
-      <div
-        className={`${styles['chatPanelHeader']} ${
-          chatIsClosed ? styles['chatPanelHeaderClose'] : styles['chatPanelHeaderOpen']
-        }`}
-      >
-        <button className={styles['chatPanelCloseBtn']} onClick={()=>{setChatIsClosed(!chatIsClosed)}}>{chatIsClosed?"<":">"}</button>
-      </div>
-      {!isConnected || sessionExpired ? (
-        <div className={styles['chatPanelSessionExpired']}>
-          Not Connected
+      <div className={`${styles['chatPanelContainer']} ${chatIsClosed ? styles['chatPanelContainerClose'] : styles['chatPanelContainerOpen']}`}>
+        <div className={styles['chatPanelReconnect']}>
+          <button onClick={()=>{setShowConnectionForm(true)}}>Reconnect</button>
         </div>
-      ) : !isConnectionConfigComplete(connectionConfig) || showConnectionForm? (
-        <ConnectionForm config={connectionConfig} onSave={(config)=>{
-          setConnectionConfig(config);
-          connect(config);
-          setShowConnectionForm(false)
-        }} />
-      ) : (
-        <div className={styles['chatPanelContent']}>
-          <div className={styles['chatPanelMessages']}>
-            {messages.map(msg => (
-              <div
-                key={msg.id}
-                className={`${styles['chatPanelMessage']} ${msg.role === 'user' ? styles['chatPanelUserMessage'] : styles['chatPanelAssistantMessage']}`}
-              >
-                {msg.role === 'assistant' ? renderAssistantMessage(msg.content) : msg.content}
-              </div>
-            ))}
-            <div ref={messagesEndRef} />
-          </div>
-          <div className={styles['chatPanelInputContainer']}>
-            <input
-              className={styles['chatPanelInput']}
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              placeholder="Type a message..."
-            />
-            <button className={styles['chatPanelSendButton']} onClick={sendMessage}>
-              Send
-            </button>
-            <button className={styles['chatPanelSendButton']} onClick={()=>{abortController.current?.abort()}}>
-              Cancel
-            </button> 
-          </div>
+        <div
+          className={`${styles['chatPanelHeader']} ${
+            chatIsClosed ? styles['chatPanelHeaderClose'] : styles['chatPanelHeaderOpen']
+          }`}
+        >
+          <button className={styles['chatPanelCloseBtn']} onClick={()=>{setChatIsClosed(!chatIsClosed)}}>{chatIsClosed?"<":">"}</button>
         </div>
-      )}
-    </div>
+        {!isConnected || sessionExpired ? (
+          <div className={styles['chatPanelSessionExpired']}>
+            Not Connected
+          </div>
+        ) : !isConnectionConfigComplete(connectionConfig) || showConnectionForm? (
+          <ConnectionForm config={connectionConfig} onSave={(config)=>{
+            setConnectionConfig(config);
+            connect(config);
+            setShowConnectionForm(false)
+          }} />
+        ) : (
+          <div className={styles['chatPanelContent']}>
+            <div className={styles['chatPanelMessages']}>
+              {messages.map(msg => (
+                <div
+                  key={msg.id}
+                  className={`${styles['chatPanelMessage']} ${msg.role === 'user' ? styles['chatPanelUserMessage'] : styles['chatPanelAssistantMessage']}`}
+                >
+                  {msg.role === 'assistant' ? renderAssistantMessage(msg.content) : msg.content}
+                </div>
+              ))}
+              <div ref={messagesEndRef} />
+            </div>
+            <div className={styles['chatPanelInputContainer']}>
+              <input
+                className={styles['chatPanelInput']}
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                placeholder="Type a message..."
+              />
+              <button className={styles['chatPanelSendButton']} onClick={sendMessage}>
+                Send
+              </button>
+              <button className={styles['chatPanelSendButton']} onClick={()=>{abortController.current?.abort()}}>
+                Cancel
+              </button> 
+            </div>
+          </div>
+        )}
+      </div>
   );
 });

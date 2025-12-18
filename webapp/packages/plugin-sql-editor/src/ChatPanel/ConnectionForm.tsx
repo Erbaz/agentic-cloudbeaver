@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import type { IConnectionConfig } from './useAgentService.js';
+import type { IConnectionConfig } from './IConnectionConfig.js';
 import style from './ChatPanel.module.css';
 import { useS } from '@cloudbeaver/core-blocks';
 

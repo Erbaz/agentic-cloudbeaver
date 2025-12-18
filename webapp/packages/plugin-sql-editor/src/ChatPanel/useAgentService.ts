@@ -12,30 +12,9 @@ import { useEffect, useState, useCallback, useRef } from 'react';
 import { reaction } from 'mobx';
 import { SqlDataSourceService } from '../SqlDataSource/SqlDataSourceService.js';
 import { ConnectionInfoAuthPropertiesResource, ConnectionInfoCustomOptionsResource, ConnectionInfoResource, createConnectionParam } from '@cloudbeaver/core-connections';
-
-
-interface IMessage {
-  id: string;
-  role: 'user' | 'assistant';
-  content: string;
-}
-
-export interface IConnectionConfig {
-  "model"?: string,
-  "embed_model"?: string,
-  "is_ollama"?: boolean,
-  "memgraph_url"?: string,
-  "memgraph_user"?: string,
-  "memgraph_password"?: string,
-  "db_url"?: string,
-  "db_user"?: string,
-  "db_password"?: string,
-  "db_host"?: string,
-  "db_type"?: string,
-  "db_port"?: string,
-  "db_name"?: string
-}
-
+import type { IConnectionConfig } from './IConnectionConfig.js';
+import type { IMessage } from './IMessage.js';
+import { useChatPanelStore } from './ChatPanelContext.js';
 
 export function isConnectionConfigComplete(config: IConnectionConfig): boolean {
   return !!(
@@ -62,6 +41,9 @@ export function useAgentService(sqlEditorTabState: ISqlEditorTabState) {
   const sqlEditor = useSqlEditor(sqlEditorTabState);
   const sqlDataSourceService = useService(SqlDataSourceService);
   const connectionsManagerService = useService(ConnectionsManagerService);
+
+  const chatPanelStore = useChatPanelStore();
+
   const [sessionExpired, setSessionExpired] = useState(expirationService.expired);
   const [inputValue, setInputValue] = useState('');
   const [isConnected, setIsConnected] = useState(false);
@@ -119,13 +101,19 @@ export function useAgentService(sqlEditorTabState: ISqlEditorTabState) {
         const customOptions = connectionInfoCustomOptions.get(connectionKey);
 
         if (customOptions) {
-          setConnectionConfig(prev => ({
+          setConnectionConfig((prev: IConnectionConfig) => ({
             ...prev,
             db_host: customOptions.host,
             db_port: customOptions.port,
             db_name: customOptions.databaseName,
             db_url: customOptions.url,
           }));
+          chatPanelStore.setConnectionConfig({
+            db_host: customOptions.host,
+            db_port: customOptions.port,
+            db_name: customOptions.databaseName,
+            db_url: customOptions.url,
+          });
           console.log('Connection Config:', {
             host: customOptions.host,
             port: customOptions.port,
@@ -145,10 +133,13 @@ export function useAgentService(sqlEditorTabState: ISqlEditorTabState) {
           const userProp = authProps.authProperties.find((p: any) => p.id === 'user' || p.id === 'username');
           console.log('User:', userProp?.value);
           if (userProp?.value) {
-            setConnectionConfig(prev => ({
+            setConnectionConfig((prev: IConnectionConfig) => ({
               ...prev,
               db_user: userProp.value
             }));
+            chatPanelStore.setConnectionConfig({
+              db_user: userProp.value
+            });
           }
         }
       });
@@ -157,12 +148,10 @@ export function useAgentService(sqlEditorTabState: ISqlEditorTabState) {
     }
 
     console.log(`tabId ${handleGetTabId()}`);
-  }, [sqlEditorService, sqlEditorModelService, connectionsManagerService, connectionsManagerService.projectConnections, connectionInfoCustomOptions, connectionInfoAuthProperties]);
-
-
-  useEffect(() => {
-    console.log('--- ChatPanel Handlers Initialization ---');
-  }, [sqlEditorTabState])
+  }, [
+    // sqlEditorService, 
+    // sqlEditorModelService, 
+    connectionsManagerService, connectionsManagerService.projectConnections, connectionInfoCustomOptions, connectionInfoAuthProperties]);
 
 
   const handleGetScript = async () => {
@@ -206,7 +195,7 @@ export function useAgentService(sqlEditorTabState: ISqlEditorTabState) {
     console.log('connect:', response);
     const res: { chat_id: string } = await response.json();
     setAgentChatId(res.chat_id);
-
+    chatPanelStore.setAgentChatId(res.chat_id);
   }, [])
 
   const sendMessage = useCallback(
@@ -268,6 +257,24 @@ export function useAgentService(sqlEditorTabState: ISqlEditorTabState) {
 
     },
     [inputValue])
+
+  useEffect(() => {
+    // Reaction triggers when any of these observables change
+    const dispose = reaction(
+      () => ({
+        messages: chatPanelStore.chatMessages,
+        agentChatId: chatPanelStore.agentChatId,
+        connectionConfig: chatPanelStore.connectionConfig,
+        isConnected: chatPanelStore.isConnected,
+      }),
+      (data) => {
+        console.log("--- Chat Panel Store Updated (reaction) ---");
+        console.log(data);
+      }
+    );
+
+    return () => dispose(); // Cleanup
+  }, [chatPanelStore]); // Empty or [chatPanelStore]
 
   return {
     messages,

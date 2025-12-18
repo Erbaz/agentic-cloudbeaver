@@ -25,7 +25,6 @@ export const ChatPanel = observer<ChatPanelProps>(function ChatPanel({ state }) 
     sessionExpired,
     inputValue,
     setInputValue,
-    connectionConfig,
     isConnected,
     showConnectionForm,
     setShowConnectionForm,

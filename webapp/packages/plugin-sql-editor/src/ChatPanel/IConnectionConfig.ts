@@ -3,6 +3,7 @@ export interface IConnectionConfig {
   "model"?: string,
   "embed_model"?: string,
   "is_ollama"?: boolean,
+  "api_key"?: string,
   "memgraph_url"?: string,
   "memgraph_user"?: string,
   "memgraph_password"?: string,

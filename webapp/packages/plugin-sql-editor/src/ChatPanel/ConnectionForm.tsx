@@ -48,17 +48,39 @@ export const ConnectionForm: React.FC<ConnectionFormProps> = ({ config, onSave }
           required
         />
       </div>
-      <div className={styles['formGroup']}>
+      <div className={styles['formGroupCheckbox']}>
         <label>
+          Is Ollama:
+        </label>
           <input
             type="checkbox"
             name="is_ollama"
             checked={!!formData.is_ollama}
-            onChange={(e) => setFormData(prev => ({ ...prev, is_ollama: e.target.checked }))}
+            onChange={(e) => {
+              const checked = e.target.checked;
+              setFormData(prev => {
+                const newState = { ...prev, is_ollama: checked };
+                if (checked) {
+                  delete newState.api_key;
+                }
+                return newState;
+              });
+            }}
           />
-          Is Ollama
-        </label>
       </div>
+      {!formData.is_ollama && (
+        <div className={styles['formGroup']}>
+          <label>API Key:</label>
+          <input
+            type="password"
+            autoComplete="off"
+            name="api_key"
+            value={formData.api_key || ''}
+            onChange={handleChange}
+            className={styles['formInput']}
+          />
+        </div>
+      )}
        <div className={styles['formGroup']}>
         <label>Memgraph URL:</label>
         <input

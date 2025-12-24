@@ -20,6 +20,12 @@ echo "Pull dbeaver platform"
 [ ! -d dbeaver-common ] && git clone --depth 1 https://github.com/dbeaver/dbeaver-common.git
 [ ! -d dbeaver-jdbc-libsql ] && git clone --depth 1 https://github.com/dbeaver/dbeaver-jdbc-libsql.git
 
+# DBEAVER_BRANCH="release_25_2_3"
+
+# [ ! -d dbeaver ] && git clone --branch $DBEAVER_BRANCH --depth 1 https://github.com/dbeaver/dbeaver.git
+# [ ! -d dbeaver-common ] && git clone --branch $DBEAVER_BRANCH --depth 1 https://github.com/dbeaver/dbeaver-common.git
+# [ ! -d dbeaver-jdbc-libsql ] && git clone --branch $DBEAVER_BRANCH --depth 1 https://github.com/dbeaver/dbeaver-jdbc-libsql.git
+
 
 cd cloudbeaver/deploy
 
